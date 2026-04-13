@@ -3,7 +3,6 @@ name: "Terraform"
 on:
   push: 
     branches: ["main"]
-    paths: ["src/**"]
   workflow_dispatch:
 
 jobs: 
@@ -13,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials 
         uses: aws-actions/configure-aws-credentials@v4
