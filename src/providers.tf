@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "rafaelferreiranevesprojetoterraform"
+    bucket = "terraformbucketprojetorafaelferreiraneves"
     key    = "env/dev/terraform.tfstate"
     region = "us-east-1"
   }
