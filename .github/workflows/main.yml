@@ -23,8 +23,8 @@ jobs:
       
       - name: Terraform init
         working-directory: ./src
-        run: terraform init -backend-config="bucket=${{ rafaelferreiranevesprojetoterraform }}" -backend-config="key=${{ env/dev/terraform.tfstate }}"
+       
 
       - name: Terraform Apply 
         working-directory: ./src
-        run: terraform apply --auto-approve
+        run: terraform apply --auto-appro
