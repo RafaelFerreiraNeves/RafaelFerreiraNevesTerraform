@@ -43,8 +43,8 @@ module "eks" {
     node_pools = ["general-purpose"]
   }
 
-  vpc_id     = "vpc-1module.vpc.vpc_id"
-  subnet_ids = ["module.vpc.private_subnets"]
+  vpc_id     = vpc-1module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
 
   eks_managed_node_groups = {
