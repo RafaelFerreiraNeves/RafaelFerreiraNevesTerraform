@@ -11,14 +11,16 @@ module "vpc" {
   enable_nat_gateway = true
   enable_vpn_gateway = true
 
-  tags = merge(var.aws_project_tags, { "kubernetes.io/cluster/${var.aws_eks_name}" = "shared" })
-
-
+  tags = merge(
+    var.aws_project_tags,
+    { "kubernetes.io/cluster/${var.aws_eks_name}" = "shared" }
+  )
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${var.aws_eks_name}" = "shared"
     "kubernetes.io/role/elb"                    = 1
   }
+
   private_subnet_tags = {
     "kubernetes.io/cluster/${var.aws_eks_name}" = "shared"
     "kubernetes.io/role/internal-elb"           = 1
@@ -32,10 +34,7 @@ module "eks" {
   name               = var.aws_eks_name
   kubernetes_version = var.aws_eks_version
 
-  # Optional
   endpoint_public_access = true
-
-  # Optional: Adds the current caller identity as an administrator via cluster access entry
   enable_cluster_creator_admin_permissions = true
 
   compute_config = {
@@ -43,9 +42,9 @@ module "eks" {
     node_pools = ["general-purpose"]
   }
 
-  vpc_id     = vpc-module.vpc.vpc_id
+  # ✅ CORREÇÃO AQUI
+  vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
-
 
   eks_managed_node_groups = {
     default = {
@@ -56,7 +55,5 @@ module "eks" {
     }
   }
 
-
   tags = var.aws_project_tags
-
 }
