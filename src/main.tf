@@ -8,9 +8,9 @@ module "vpc" {
   private_subnets = var.aws_vpc_private_subnets
   public_subnets  = var.aws_vpc_public_subnets
 
-  enable_nat_gateway     = true
-  one_nat_gateway_per_az = true
-  enable_vpn_gateway     = true
+  enable_nat_gateway = true
+  single_nat_gateway = true
+  enable_vpn_gateway = true
 
   tags = merge(
     var.aws_project_tags,
@@ -36,10 +36,16 @@ module "eks" {
   kubernetes_version = var.aws_eks_version
 
   endpoint_public_access = true
+  cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
+
   enable_cluster_creator_admin_permissions = true
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+
+  eks_managed_node_group_defaults = {
+    ami_type = "AL2_x86_64"
+  }
 
   eks_managed_node_groups = {
     default = {
