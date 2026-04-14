@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket = "terraformbucketprojetorafaelferreiraneves"
-    key    = "env/dev/terraform.tfstate"
+    key    = "env/dev/rafa/terraform.tfstate"
     region = "us-east-1"
   }
 }
