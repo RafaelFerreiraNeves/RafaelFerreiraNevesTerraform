@@ -8,8 +8,9 @@ module "vpc" {
   private_subnets = var.aws_vpc_private_subnets
   public_subnets  = var.aws_vpc_public_subnets
 
-  enable_nat_gateway = true
-  enable_vpn_gateway = true
+  enable_nat_gateway     = true
+  one_nat_gateway_per_az = true
+  enable_vpn_gateway     = true
 
   tags = merge(
     var.aws_project_tags,
@@ -46,8 +47,16 @@ module "eks" {
       desired_size   = 2
       max_size       = 3
       min_size       = 1
+
+      iam_role_additional_policies = {
+        AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+        AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      }
     }
   }
 
   tags = var.aws_project_tags
+
+  depends_on = [module.vpc]
 }
