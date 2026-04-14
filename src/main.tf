@@ -9,8 +9,9 @@ module "vpc" {
   private_subnets = var.aws_vpc_private_subnets
   public_subnets  = var.aws_vpc_public_subnets
 
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
+  enable_nat_gateway = true
+  single_nat_gateway = true
+
   enable_dns_hostnames = true
   enable_dns_support   = true
 
@@ -41,15 +42,37 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
+  # 🔥 CRÍTICO (resolve seu erro)
+  eks_managed_node_group_defaults = {
+    ami_type       = "AL2_x86_64"
+    instance_types = ["t3.medium"]
+
+    attach_cluster_primary_security_group = true
+
+    # 🔥 evita downtime
+    update_config = {
+      max_unavailable_percentage = 50
+    }
+  }
+
   eks_managed_node_groups = {
     default = {
-      instance_types = var.aws_eks_managed_node_groups_instance_types
-
-      min_size     = 1
+      min_size     = 2
       desired_size = 2
-      max_size     = 3
+      max_size     = 4
 
       subnet_ids = module.vpc.private_subnets
+
+      # 🔥 rolling update sem downtime
+      update_config = {
+        max_unavailable = 1
+      }
+
+      # 🔥 evita recriação desnecessária
+      create_before_destroy = true
+
+      # 🔥 opcional: melhor estabilidade
+      capacity_type = "ON_DEMAND"
     }
   }
 
