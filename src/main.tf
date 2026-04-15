@@ -46,11 +46,11 @@ module "eks" {
   eks_managed_node_groups = {
   default = {
     ami_type       = "AL2_x86_64" # 🔥 CORRIGIDO
-    instance_types = ["t3.small"]
+    instance_types = ["t3.micro"]
 
-    min_size     = 2
-    desired_size = 2
-    max_size     = 4
+    min_size     = 1
+    desired_size = 1
+    max_size     = 1
 
     capacity_type = "ON_DEMAND"
 
