@@ -32,10 +32,11 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
 
-  cluster_name    = var.aws_eks_name
-  cluster_version = var.aws_eks_version
+  # ✅ nomes novos (v21)
+  name               = var.aws_eks_name
+  kubernetes_version = var.aws_eks_version
 
-  cluster_endpoint_public_access = true
+  endpoint_public_access = true
 
   enable_cluster_creator_admin_permissions = true
 
@@ -55,7 +56,8 @@ module "eks" {
 
       capacity_type = "ON_DEMAND"
 
-      attach_cluster_primary_security_group = true
+      # ⚠️ removido (não usar mais no v21)
+      # attach_cluster_primary_security_group = true
 
       iam_role_additional_policies = {
         AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
