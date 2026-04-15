@@ -42,16 +42,16 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  # 🔥 CRÍTICO (resolve seu erro)
   eks_managed_node_group_defaults = {
     ami_type       = "AL2_x86_64"
     instance_types = ["t3.medium"]
 
     attach_cluster_primary_security_group = true
 
-    # 🔥 evita downtime
-    update_config = {
-      max_unavailable_percentage = 50
+    iam_role_additional_policies = {
+      AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
     }
   }
 
@@ -63,15 +63,10 @@ module "eks" {
 
       subnet_ids = module.vpc.private_subnets
 
-      # 🔥 rolling update sem downtime
       update_config = {
         max_unavailable = 1
       }
 
-      # 🔥 evita recriação desnecessária
-      create_before_destroy = true
-
-      # 🔥 opcional: melhor estabilidade
       capacity_type = "ON_DEMAND"
     }
   }
