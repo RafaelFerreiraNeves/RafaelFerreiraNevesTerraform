@@ -52,18 +52,18 @@ module "eks" {
       max_size     = 1
 
       capacity_type = "ON_DEMAND"
-
-      disk_size = 20
+      disk_size     = 20
 
       iam_role_additional_policies = {
         AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
         AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
         AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  metadata_options = {
-    http_tokens = "required"
-  }
+      }
 
-  
+      metadata_options = {
+        http_tokens = "required"
+      }
+
       update_config = {
         max_unavailable = 1
       }
