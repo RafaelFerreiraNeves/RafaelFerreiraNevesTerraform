@@ -32,42 +32,40 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
 
-  name               = var.aws_eks_name
-  kubernetes_version = var.aws_eks_version
+  cluster_name    = var.aws_eks_name
+  cluster_version = var.aws_eks_version
 
-  endpoint_public_access = true
+  cluster_endpoint_public_access = true
 
   enable_cluster_creator_admin_permissions = true
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  eks_managed_node_group_defaults = {
-    ami_type       = "AL2_x86_64"
-    instance_types = ["t3.medium"]
-
-    attach_cluster_primary_security_group = true
-
-    iam_role_additional_policies = {
-      AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-      AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-      AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-    }
-  }
-
   eks_managed_node_groups = {
     default = {
+      ami_type       = "AL2_x86_64"
+      instance_types = ["t3.medium"]
+
       min_size     = 2
       desired_size = 2
       max_size     = 4
 
       subnet_ids = module.vpc.private_subnets
 
+      capacity_type = "ON_DEMAND"
+
+      attach_cluster_primary_security_group = true
+
+      iam_role_additional_policies = {
+        AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+        AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      }
+
       update_config = {
         max_unavailable = 1
       }
-
-      capacity_type = "ON_DEMAND"
     }
   }
 
