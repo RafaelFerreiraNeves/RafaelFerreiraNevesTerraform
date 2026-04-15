@@ -35,8 +35,8 @@ module "eks" {
   name               = var.aws_eks_name
   kubernetes_version = var.aws_eks_version
 
-  cluster_endpoint_public_access  = true
-  cluster_endpoint_private_access = true
+  endpoint_public_access  = true
+  endpoint_private_access = true
 
   enable_cluster_creator_admin_permissions = true
 
@@ -59,8 +59,11 @@ module "eks" {
         AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
         AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
         AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-      }
+  metadata_options = {
+    http_tokens = "required"
+  }
 
+  
       update_config = {
         max_unavailable = 1
       }
