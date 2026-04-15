@@ -44,27 +44,30 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
-  default = {
-    ami_type       = "AL2_x86_64" # 🔥 CORRIGIDO
-    instance_types = ["t3.micro"]
+    default = {
+      instance_types = ["t3.small"]
 
-    min_size     = 1
-    desired_size = 1
-    max_size     = 1
+      min_size     = 1
+      desired_size = 1
+      max_size     = 1
 
-    capacity_type = "ON_DEMAND"
+      capacity_type = "ON_DEMAND"
 
-    iam_role_additional_policies = {
-      AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-      AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-      AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-    }
+      disk_size = 20
 
-    update_config = {
-      max_unavailable = 1
+      iam_role_additional_policies = {
+        AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+        AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      }
+
+      update_config = {
+        max_unavailable = 1
+      }
     }
   }
-}
 
   tags = var.aws_project_tags
+
+  depends_on = [module.vpc]
 }
