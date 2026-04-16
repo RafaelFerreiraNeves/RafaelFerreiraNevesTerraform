@@ -35,6 +35,10 @@ module "eks" {
   name               = var.aws_eks_name
   kubernetes_version = var.aws_eks_version
 
+  # 🔥 FIX do erro de count
+  account_id = "123456789012" # <-- TROQUE pelo seu
+  partition  = "aws"
+
   endpoint_public_access  = true
   endpoint_private_access = true
 
