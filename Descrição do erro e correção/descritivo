@@ -1,4 +1,4 @@
-
+Se ao rodar a pipeline aqui, e mesmo se rodar manualmente em sua máquina receber o erro abaixo, siga o procedimento
 
 
 │ Error: waiting for EKS Node Group (my-eks:default-20260415223247898700000001) create: unexpected state 'CREATE_FAILED', wanted 
