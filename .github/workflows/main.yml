@@ -4,10 +4,10 @@ on:
   pull_request:
   workflow_dispatch:
 
-jobs: 
+jobs:
   terraform:
-    name: "Terraform Apply"
-    runs-on: "ubuntu-latest"
+    name: "Terraform Plan"
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -16,7 +16,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Configure AWS Credentials 
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
@@ -27,6 +27,6 @@ jobs:
         working-directory: ./src
         run: terraform init
 
-      - name: Terraform Apply 
+      - name: Terraform Plan
         working-directory: ./src
-        run: terraform apply --auto-approve
+        run: terraform plan
