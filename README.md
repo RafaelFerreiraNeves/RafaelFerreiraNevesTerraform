@@ -1,8 +1,7 @@
 Automação com Terraform
 Objetivo do projeto
 
-O objetivo é automatizar o processo de criação e manutenção do ambiente para execução dos projetos de Software da Mr. Fusion Solutions.
-Premissas do Projeto
+O objetivo é automatizar o processo de criação e manutenção do ambiente para execução dos projetos de Software 
 
 Para o desenvolvimento do projeto, foram levantadas as seguintes premissas:
 
@@ -44,9 +43,7 @@ AWS_ACCESS_KEY_ID => Access Key utilizada para configurar o AWS CLI.
 
 AWS_SECRET_ACCESS_KEY => Secret access Key utilizada para configurar o AWS CLI.
 
-AWS_BUCKET_NAME => Nome do Bucket utilizado para armazenar o estado do projeto Terraform.
 
-AWS_BUCKET_FILE => Nome do arquivo utilizado para armazenar o estado do projeto Terraform.
 Estrutura da solução
 
 Diagrama do projeto
