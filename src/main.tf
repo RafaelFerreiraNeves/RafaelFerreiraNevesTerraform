@@ -1,6 +1,5 @@
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.8.1"
+  source = "terraform-aws-modules/vpc/aws"
 
   name = var.aws_vpc_name
   cidr = var.aws_vpc_cidr
@@ -10,21 +9,19 @@ module "vpc" {
   public_subnets  = var.aws_vpc_public_subnets
 
   enable_nat_gateway = true
-  single_nat_gateway = true
+  enable_vpn_gateway = true
 
-  enable_dns_hostnames = true
-  enable_dns_support   = true
+  tags = merge(var.aws_project_tags, { "kubernetes.io/cluster/${var.aws_eks_name}" = "shared" })
 
-  tags = var.aws_project_tags
+
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${var.aws_eks_name}" = "shared"
-    "kubernetes.io/role/elb"                    = "1"
+    "kubernetes.io/role/elb"                    = 1
   }
-
   private_subnet_tags = {
     "kubernetes.io/cluster/${var.aws_eks_name}" = "shared"
-    "kubernetes.io/role/internal-elb"           = "1"
+    "kubernetes.io/role/internal-elb"           = 1
   }
 }
 
@@ -35,49 +32,31 @@ module "eks" {
   name               = var.aws_eks_name
   kubernetes_version = var.aws_eks_version
 
-  endpoint_public_access  = true
-  endpoint_private_access = true
+  # Optional
+  endpoint_public_access = true
 
+  # Optional: Adds the current caller identity as an administrator via cluster access entry
   enable_cluster_creator_admin_permissions = true
+
+  compute_config = {
+    enabled    = true
+    node_pools = ["general-purpose"]
+  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  # 🔥 FIX PRINCIPAL: garantir valor conhecido no plan
-  create = true
 
   eks_managed_node_groups = {
     default = {
-      instance_types = ["t3.small"]
-
-      min_size     = 1
-      desired_size = 1
-      max_size     = 1
-
-      capacity_type = "ON_DEMAND"
-      disk_size     = 20
-
-      # 🔥 FIX DO ERRO DE COUNT
-      # força valores estáticos (evita aws_caller_identity interno)
-      iam_role_name = "eks-node-group-role"
-
-      iam_role_additional_policies = {
-        AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-        AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-      }
-
-      metadata_options = {
-        http_tokens = "required"
-      }
-
-      update_config = {
-        max_unavailable = 1
-      }
+      instance_types = var.aws_eks_managed_node_groups_instance_types
+      desired_size   = 1
+      max_size       = 1
+      min_size       = 1
     }
   }
 
+
   tags = var.aws_project_tags
 
-  depends_on = [module.vpc]
 }
