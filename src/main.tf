@@ -35,10 +35,6 @@ module "eks" {
   name               = var.aws_eks_name
   kubernetes_version = var.aws_eks_version
 
-  # 🔥 FIX do erro de count
-  account_id = "123456789012" # <-- TROQUE pelo seu
-  partition  = "aws"
-
   endpoint_public_access  = true
   endpoint_private_access = true
 
@@ -46,6 +42,9 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+
+  # 🔥 FIX PRINCIPAL: garantir valor conhecido no plan
+  create = true
 
   eks_managed_node_groups = {
     default = {
@@ -57,6 +56,10 @@ module "eks" {
 
       capacity_type = "ON_DEMAND"
       disk_size     = 20
+
+      # 🔥 FIX DO ERRO DE COUNT
+      # força valores estáticos (evita aws_caller_identity interno)
+      iam_role_name = "eks-node-group-role"
 
       iam_role_additional_policies = {
         AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
