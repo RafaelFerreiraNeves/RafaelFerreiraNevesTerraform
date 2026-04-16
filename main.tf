@@ -43,15 +43,15 @@ module "eks" {
     node_pools = ["general-purpose"]
   }
 
-  vpc_id     = "vpc-1module.vpc.vpc_id"
-  subnet_ids = ["module.vpc.private_subnets"]
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
 
   eks_managed_node_groups = {
     default = {
       instance_types = var.aws_eks_managed_node_groups_instance_types
-      desired_size   = 2
-      max_size       = 3
+      desired_size   = 1
+      max_size       = 1
       min_size       = 1
     }
   }
