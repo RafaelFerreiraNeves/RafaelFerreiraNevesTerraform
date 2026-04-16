@@ -1,0 +1,48 @@
+
+
+
+│ Error: waiting for EKS Node Group (my-eks:default-20260415223247898700000001) create: unexpected state 'CREATE_FAILED', wanted 
+target 'ACTIVE'. last error: i-094acc9060eb684fe: NodeCreationFailure: Unhealthy nodes in the kubernetes cluster
+
+
+  ✔ Cluster ACTIVE
+✔ Node registrado
+❌ kube-system vazio
+❌ VPC CNI não instalado
+❌ CoreDNS não instalado
+❌ node: cni plugin not initialized
+
+Cluster criado sem “default addons provisioning”
+
+Ou seja:
+
+o EKS não criou automaticamente:
+vpc-cni
+coredns
+kube-proxy
+
+Isso ocorre pois em algumas versões em alguns cenários Terraform o bootstrap não instala os addons automaticamente 
+
+aws eks create-addon  --cluster-name my-eks --addon-name vpc-cni --region us-east-1   --resolve-conflicts OVERWRITE
+aws eks create-addon  --cluster-name my-eks --addon-name coredns --region us-east-1   --resolve-conflicts OVERWRITE
+aws eks create-addon  --cluster-name my-eks --addon-name kube-proxy  --region us-east-1   --resolve-conflicts OVERWRITE
+
+Pronto, problema resolvido, emita esses dois comandos pra checar se está tudo ok
+
+C:\Users\casa\Pictures\Source>kubectl get pods -n kube-system
+NAME                       READY   STATUS    RESTARTS   AGE
+aws-node-49v9v             2/2     Running   0          8m47s
+coredns-586b798467-8kmxb   1/1     Running   0          7m52s
+coredns-586b798467-mkr7h   1/1     Running   0          7m52s
+kube-proxy-kphkq           1/1     Running   0          7m18s
+
+
+C:\Users\casa\Pictures\Source>kubectl get pods -n kube-system
+NAME                       READY   STATUS    RESTARTS   AGE
+aws-node-49v9v             2/2     Running   0          8m47s
+coredns-586b798467-8kmxb   1/1     Running   0          7m52s
+coredns-586b798467-mkr7h   1/1     Running   0          7m52s
+kube-proxy-kphkq           1/1     Running   0          7m18s
+
+
+  Qualquer dúvida, entre em contato no rafaelferreiraneves@rfnc.com.br ou na caixa de comentários do www.rfnc.com.br
