@@ -22,21 +22,13 @@ vpc-cni
 coredns
 kube-proxy
 
-Isso ocorre pois em algumas versões e em alguns cenários Terraform, o bootstrap não instala os addons automaticamente 
+Isso ocorre pois em algumas versões e em alguns cenários Terraform, o bootstrap não instala os addons automaticamente, sendo assim emita esses três comandos
 
 aws eks create-addon  --cluster-name my-eks --addon-name vpc-cni --region us-east-1   --resolve-conflicts OVERWRITE
 aws eks create-addon  --cluster-name my-eks --addon-name coredns --region us-east-1   --resolve-conflicts OVERWRITE
 aws eks create-addon  --cluster-name my-eks --addon-name kube-proxy  --region us-east-1   --resolve-conflicts OVERWRITE
 
-Pronto, problema resolvido, emita esses dois comandos pra checar se está tudo ok
-
-C:\Users\casa\Pictures\Source>kubectl get pods -n kube-system
-NAME                       READY   STATUS    RESTARTS   AGE
-aws-node-49v9v             2/2     Running   0          8m47s
-coredns-586b798467-8kmxb   1/1     Running   0          7m52s
-coredns-586b798467-mkr7h   1/1     Running   0          7m52s
-kube-proxy-kphkq           1/1     Running   0          7m18s
-
+Pronto, problema resolvido, emita esse comando pra checar se está tudo ok
 
 C:\Users\casa\Pictures\Source>kubectl get pods -n kube-system
 NAME                       READY   STATUS    RESTARTS   AGE
