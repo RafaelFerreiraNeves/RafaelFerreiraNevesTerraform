@@ -1,57 +1,176 @@
-Automação com Terraform
-Objetivo do projeto
+#  Cluster Kubernetes na AWS com Terraform
 
-O objetivo é automatizar o processo de criação e manutenção do ambiente para execução dos projetos de Software 
+Este projeto demonstra a criação de um cluster Kubernetes na AWS utilizando Terraform, com foco em **provisionamento direto de infraestrutura e entendimento dos componentes necessários para execução de workloads containerizados**.
 
-Para o desenvolvimento do projeto, foram levantadas as seguintes premissas:
+---
 
-    Utilizar o Terraform como ferramenta de infraestrutura como código.
-    O cluster Kubernetes deve ser criado utilizando o serviço Elastic Kubernetes Service (EKS) da AWS.
-    O projeto deve ser o mais simples e reaproveitável possível.
-    Toda vez que houver alteração no código Terraform na branch main do repositório, a pipeline deve ser executada.
-    Só vai haver um ambiente Kubernetes (os ambientes de desenvolvimento, homologação e produção serão separados por namespace).
+##  Arquitetura
 
-Tecnologias utilizadas no projeto
+```text
+Internet
+   ↓
+VPC
+   ↓
+Subnets (públicas e privadas)
+   ↓
+Cluster Kubernetes
+   ↓
+Worker Nodes (EC2)
+```
 
-    AWS
-        S3
-        EKS
-    AWS CLI
-    Terraform
-        AWS Provider
-        AWS VPC Terraform module
-        AWS EKS Terraform module
-    GitHub
-        GitHub Actions
+---
 
-Motivações para o uso de cada tecnologia
+##  Objetivo do Projeto
 
-    EKS - Requisito do projeto.
-    S3 - Foi adotado para armazenar o estado atual do projeto Terraform. Foi definido o seu uso por ser um serviço da própria AWS e ter controle de versionamento dos arquivos.
-    GitHub Actions - Requisito do projeto.
+Demonstrar na prática:
 
-Instruções para executar
+* Provisionamento de infraestrutura na AWS com Terraform
+* Criação de um cluster Kubernetes
+* Configuração de rede (VPC, subnets, segurança)
+* Entendimento dos componentes básicos do Kubernetes
 
-A pipeline de criação ou atualização do projeto é executada sempre que o código Terraform do projeto for alterado na branch main.
-Configurações
+---
 
-As variáveis de configuração do projeto estão no arquivo terraform.tfvars, exceto as variáveis consideradas sensiveis que estão no gerenciador de secrets do GitHub Actions.
+##  Tecnologias Utilizadas
 
-Variáveis armazendas em secrets:
+* Kubernetes
+* Terraform
+* AWS (EC2, VPC, Subnets, Security Groups, IAM)
+* Linux
+* GitHub Actions (CI/CD)
 
-AWS_ACCESS_KEY_ID => Access Key utilizada para configurar o AWS CLI.
+---
 
-AWS_SECRET_ACCESS_KEY => Secret access Key utilizada para configurar o AWS CLI.
+##  Estrutura do Projeto
 
+```bash
+.
+├── main.tf
+├── variables.tf
+├── outputs.tf
+```
 
-Estrutura da solução
+---
 
-Diagrama do projeto
+##  Sobre o Cluster Kubernetes
 
-Explicação do Fluxo
-Possíveis evoluções do projeto
+O cluster provisionado permite:
 
-Algumas evoluções que sugiro para o projeto:
+* Execução de containers em múltiplos nós
+* Distribuição de carga entre instâncias
+* Gerenciamento básico de workloads
 
-    Separar ambientes dev, homolog e prod utilizando o Terraform Workspace ou Terraform Grunt para criação e gerenciamento desses ambientes.
-    Usar o DynamoDB junto com o S3 para evitar execução paralela do Terraform.
+Observação:
+Este projeto foca no **provisionamento da infraestrutura do cluster**, não na orquestração avançada de aplicações dentro dele.
+
+---
+
+##  Segurança e Rede
+
+* VPC isolada
+* Subnets públicas e privadas
+* Controle de acesso via Security Groups
+* Configuração de permissões via IAM
+
+---
+
+##  Outputs do Terraform
+
+Exemplos de outputs disponíveis:
+
+```hcl
+output "cluster_endpoint" {
+  value = aws_eks_cluster.this.endpoint
+}
+
+output "cluster_name" {
+  value = aws_eks_cluster.this.name
+}
+```
+
+---
+
+##  Como Executar
+
+### 1. Configurar credenciais AWS
+
+```bash
+aws configure
+```
+
+---
+
+### 2. Inicializar Terraform
+
+```bash
+terraform init
+```
+
+---
+
+### 3. Planejar infraestrutura
+
+```bash
+terraform plan
+```
+
+---
+
+### 4. Aplicar
+
+```bash
+terraform apply
+```
+
+---
+
+##  Acesso ao Cluster
+
+Após o provisionamento:
+
+```bash
+aws eks update-kubeconfig --name <cluster_name>
+```
+
+---
+
+##  Conceitos Aplicados
+
+* Infraestrutura como Código (IaC)
+* Provisionamento de cluster Kubernetes
+* Configuração de rede na AWS
+* Integração entre serviços AWS
+* Automação de infraestrutura
+
+---
+
+##  Limitações do Projeto
+
+* Não utiliza modularização com Terraform
+* Não inclui deploy de aplicações no cluster
+* Não possui autoscaling configurado
+* Não possui ingress controller
+
+---
+
+##  Melhorias Futuras
+
+* Refatorar para arquitetura modular
+* Deploy de aplicações no cluster
+* Configurar Ingress Controller
+* Adicionar Auto Scaling
+* Monitoramento com Prometheus e Grafana
+
+---
+
+##  Autor
+
+Rafael Ferreira Neves
+
+---
+
+##  Conclusão
+
+Este projeto demonstra a criação de um cluster Kubernetes na AWS utilizando Terraform de forma direta, com foco em aprendizado dos componentes essenciais de infraestrutura e orquestração.
+
+---
